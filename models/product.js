@@ -1,31 +1,31 @@
-const db = require("../util/database");
-const Cart = require("./cart");
+const mongoConnect = require("../util/database").mongoConnect;
 
-module.exports = class Product {
-	constructor(id, title, imageUrl, description, price) {
-		this.id = id;
+class Product {
+	constructor(title, price, description, imageUrl) {
 		this.title = title;
-		this.imageUrl = imageUrl;
-		this.description = description;
 		this.price = price;
+		this.description = description;
+		this.imageUrl = imageUrl;
 	}
-
-	save() {
-		return db.execute(
-			`INSERT INTO products (title, price, imageUrl, description) 
-		VALUES (?,?,?,?)
-		`,
-			[this.title, this.price, this.imageUrl, this.description]
-		);
+	async save() {
+		const db = mongoConnect.db();
+		try {
+			return await db.collection("products").insertOne(this);
+		} catch (error) {
+			console.log(error);
+		}
 	}
-
-	static deleteById(id) {}
-
 	static fetchAll() {
-		return db.execute("SELECT * FROM products");
+		const db = mongoConnect.db();
+		return db
+			.collection("products")
+			.find()
+			.toArray()
+			.then(products => {
+				console.log(products);
+				return products;
+			})
+			.catch(err => console.log(err));
 	}
-
-	static findById(id) {
-		return db.execute("SELECT * FROM products WHERE products.id = ?", [id]);
-	}
-};
+}
+module.exports = Product;
