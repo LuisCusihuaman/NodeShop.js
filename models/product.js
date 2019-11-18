@@ -7,7 +7,7 @@ class Product {
 		this.price = price;
 		this.description = description;
 		this.imageUrl = imageUrl;
-		this._id = new mongodb.ObjectID(id);
+		this._id = id ? new mongodb.ObjectID(id) : null;
 	}
 	async save() {
 		const db = mongoConnect.db();
@@ -46,6 +46,16 @@ class Product {
 				return product;
 			})
 			.catch(() => {});
+	}
+	async deleteById(prodId) {
+		const db = mongoConnect.db();
+		try {
+			return await db
+				.collection("products")
+				.deleteOne({ _id: new mongodb.ObjectId(prodId) });
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }
 module.exports = Product;
