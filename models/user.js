@@ -17,7 +17,7 @@ class User {
 		}
 	}
 
-	addToCart(product) {
+	async addToCart(product) {
 		const cartProductIndex = this.cart.items.findIndex(cp => {
 			return cp.productId.toString() === product._id.toString();
 		});
@@ -42,17 +42,20 @@ class User {
 			.updateOne(
 				{ _id: new ObjectId(this._id) },
 				{ $set: { cart: updatedCart } }
-			);
+			)
+			.catch(err => console.log(err));
 	}
 
 	getCart() {
 		const db = mongoConnect.db();
+		console.log(this.cart);
 		const productsIds = this.cart.items.map(i => i.productId);
 		return db
 			.collection("products")
 			.find({ _id: { $in: productsIds } })
 			.toArray()
 			.then(products => {
+				console.log(products);
 				return products.map(p => {
 					return {
 						...p,
@@ -63,6 +66,19 @@ class User {
 				});
 			})
 			.catch(err => console.log(err));
+	}
+
+	deleteItemFromCart(productId) {
+		const updatedCartItems = this.cart.items.filter(item => {
+			item.productId.toString() !== productId.toString();
+		});
+		const db = mongoConnect.db();
+		return db
+			.collection("users")
+			.updateOne(
+				{ _id: new ObjectId(this._id) },
+				{ $set: { cart: updatedCartItems } }
+			);
 	}
 
 	static async findById(prodId) {

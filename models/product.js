@@ -46,7 +46,7 @@ class Product {
 			.then(product => {
 				return product;
 			})
-			.catch(() => {});
+			.catch(err => console.log(err));
 	}
 	async deleteById(prodId) {
 		const db = mongoConnect.db();
