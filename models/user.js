@@ -45,6 +45,26 @@ class User {
 			);
 	}
 
+	getCart() {
+		const db = mongoConnect.db();
+		const productsIds = this.cart.items.map(i => i.productId);
+		return db
+			.collection("products")
+			.find({ _id: { $in: productsIds } })
+			.toArray()
+			.then(products => {
+				return products.map(p => {
+					return {
+						...p,
+						quantity: this.cart.items.find(
+							i => i.productId.toString() === p._id.toString()
+						).quantity
+					};
+				});
+			})
+			.catch(err => console.log(err));
+	}
+
 	static async findById(prodId) {
 		let userId = new ObjectId(prodId);
 		const db = mongoConnect.db();
@@ -53,7 +73,6 @@ class User {
 			.collection("users")
 			.findOne({ _id: userId })
 			.then(user => {
-				console.log(`el usuario es: `, user);
 				return user;
 			})
 			.catch(err => console.log(err));
