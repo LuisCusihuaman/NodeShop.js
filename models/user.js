@@ -81,6 +81,23 @@ class User {
 			);
 	}
 
+	addOrder() {
+		const db = mongoConnect.db();
+		db.collection("orders")
+			.insertOne(this.cart)
+			.then(async () => {
+				this.cart = { items: [] };
+				return db
+					.collection("users")
+					.updateOne(
+						{ _id: new ObjectId(this._id) },
+						{ $set: { cart: { items: [] } } }
+					)
+					.catch(err => console.log(err));
+			})
+			.catch(err => console.log(err));
+	}
+
 	static async findById(prodId) {
 		let userId = new ObjectId(prodId);
 		const db = mongoConnect.db();
