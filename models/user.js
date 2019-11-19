@@ -46,9 +46,8 @@ class User {
 			.catch(err => console.log(err));
 	}
 
-	getCart() {
+	async getCart() {
 		const db = mongoConnect.db();
-		console.log(this.cart);
 		const productsIds = this.cart.items.map(i => i.productId);
 		return db
 			.collection("products")
