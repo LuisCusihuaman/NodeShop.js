@@ -1,4 +1,4 @@
-const mongoConnect = require("../util/database").mongoConnect;
+/* const mongoConnect = require("../util/database").mongoConnect;
 const ObjectId = require("mongodb").ObjectId;
 
 class User {
@@ -129,3 +129,4 @@ class User {
 }
 
 module.exports = User;
+ */
