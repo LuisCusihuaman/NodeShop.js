@@ -107,7 +107,13 @@ class User {
 			.catch(err => console.log(err));
 	}
 
-	getOrders() {}
+	getOrders() {
+		const db = mongoConnect.db();
+		return db
+			.collection("orders")
+			.find({ "user._id": new ObjectId(this._id) })
+			.toArray();
+	}
 
 	static async findById(prodId) {
 		let userId = new ObjectId(prodId);
