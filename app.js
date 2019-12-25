@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-/* const User = require("./models/user"); */
+const User = require("./models/user");
 
 const app = express();
 
@@ -31,7 +31,8 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.get404);
 
-const uri = `mongodb+srv://Luis:GqAkni$+Df_ut2C@cluster0-vmurt.mongodb.net/shop?retryWrites=true&w=majority`;
+const uri =
+	"mongodb+srv://Luis:5WAvUJnyunuOLjvZ@cluster0-vmurt.mongodb.net/shop?retryWrites=true&w=majority";
 
 mongoose
 	.connect(uri, {
@@ -40,6 +41,13 @@ mongoose
 	})
 	.then(() => {
 		app.listen(3000);
+		const user = new User({
+			name: "Luis",
+			email: "luis@test.com",
+			cart: {
+				items: []
+			}
+		});
 		console.log("connected");
 	})
 	.catch(err => console.log(err));
