@@ -18,14 +18,14 @@ const shopRoutes = require("./routes/shop");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-/* app.use((req, res, next) => {
-	User.findById("5dd322b91c9d440000b44c37")
+app.use((req, res, next) => {
+	User.findById("5e6853445cd2ef2960bc2971")
 		.then(user => {
-			req.user = new User(user.name, user.email, user.cart, user._id);
+			req.user = user;
 			next();
 		})
 		.catch(err => console.log(err));
-}); */
+});
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -40,14 +40,19 @@ mongoose
 		useUnifiedTopology: true
 	})
 	.then(() => {
-		app.listen(3000);
-		const user = new User({
-			name: "Luis",
-			email: "luis@test.com",
-			cart: {
-				items: []
+		User.findOne().then(user => {
+			if (!user) {
+				const user = new User({
+					name: "Luis",
+					email: "luis@test.com",
+					cart: {
+						items: []
+					}
+				});
+				user.save();
 			}
 		});
+		app.listen(3000);
 		console.log("connected");
 	})
 	.catch(err => console.log(err));
