@@ -46,6 +46,14 @@ userSchema.methods.addToCart = function(product) {
 	return this.save();
 };
 
+userSchema.methods.removeFromCart = function(productId) {
+	const updatedCartItems = this.cart.items.filter(item => {
+		item.productId.toString() !== productId.toString();
+	});
+	this.cart.items = updatedCartItems;
+	return this.save();
+};
+
 module.exports = mongoose.model("User", userSchema);
 /* const mongoConnect = require("../util/database").mongoConnect;
 const ObjectId = require("mongodb").ObjectId;
@@ -92,16 +100,7 @@ class User {
 	}
 
 	deleteItemFromCart(productId) {
-		const updatedCartItems = this.cart.items.filter(item => {
-			item.productId.toString() !== productId.toString();
-		});
-		const db = mongoConnect.db();
-		return db
-			.collection("users")
-			.updateOne(
-				{ _id: new ObjectId(this._id) },
-				{ $set: { cart: updatedCartItems } }
-			);
+
 	}
 
 	async addOrder() {
