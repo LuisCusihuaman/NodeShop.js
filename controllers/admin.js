@@ -18,7 +18,8 @@ exports.postAddProduct = (req, res, next) => {
 		title: title,
 		price: price,
 		description: description,
-		imageUrl: imageUrl
+		imageUrl: imageUrl,
+		userId: req.user //monogosee chose of user id antes que el objeto usuario
 	});
 	product
 		.save()
