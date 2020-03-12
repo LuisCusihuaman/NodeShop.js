@@ -1,12 +1,11 @@
 const Product = require("../models/product");
-const mongodb = require("mongodb");
-const ObjectId = mongodb.ObjectId;
+
 exports.getAddProduct = (req, res, next) => {
 	res.render("admin/edit-product", {
 		pageTitle: "Add Product",
 		path: "/admin/add-product",
 		editing: false,
-		isAuthenticated: req.isLoggedIn
+		isAuthenticated: req.session.isLoggedIn
 	});
 };
 
@@ -20,7 +19,7 @@ exports.postAddProduct = (req, res, next) => {
 		price: price,
 		description: description,
 		imageUrl: imageUrl,
-		userId: req.user //monogosee chose of user id antes que el objeto usuario
+		userId: req.session.user
 	});
 	product
 		.save()
@@ -49,7 +48,8 @@ exports.getEditProduct = (req, res, next) => {
 				pageTitle: "Edit Product",
 				path: "/admin/edit-product",
 				editing: editMode,
-				product: product
+				product: product,
+				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch(err => console.log(err));
@@ -70,7 +70,7 @@ exports.postEditProduct = (req, res, next) => {
 			product.imageUrl = updatedImageUrl;
 			return product.save();
 		})
-		.then(() => {
+		.then(result => {
 			console.log("UPDATED PRODUCT!");
 			res.redirect("/admin/products");
 		})
@@ -79,12 +79,15 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
 	Product.find()
+		// .select('title price -_id')
+		// .populate('userId', 'name')
 		.then(products => {
+			//console.log(products);
 			res.render("admin/products", {
 				prods: products,
 				pageTitle: "Admin Products",
 				path: "/admin/products",
-				isAuthenticated: req.isLoggedIn
+				isAuthenticated: req.session.isLoggedIn
 			});
 		})
 		.catch(err => console.log(err));
