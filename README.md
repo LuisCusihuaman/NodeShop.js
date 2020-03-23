@@ -26,8 +26,6 @@ Based on the projects of the [NodeJS - The Complete Guide (incl. MVC, REST APIs,
 - Using Query Params
 - Working with NoSQL & Using MongoDB
 - Mongoose
-
-# *Coming soon in the app* 
 - Authentication
 - Encrypting Passwords
 - Signin Functionality
@@ -37,6 +35,9 @@ Based on the projects of the [NodeJS - The Complete Guide (incl. MVC, REST APIs,
 - Authorization
 - Validation
 - Sending Emails
+
+# *Coming soon in the app* 
+
 - Error Handling
 - File Upload & Download
 - Pagination
