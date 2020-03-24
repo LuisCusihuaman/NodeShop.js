@@ -164,6 +164,7 @@ exports.getInvoice = (req, res, next) => {
 			}
 			const invoiceName = "invoice-" + orderId + ".pdf";
 			const invoicePath = path.join("data", "invoices", invoiceName);
+			/* 
 			fs.readFile(invoicePath, (err, data) => {
 				if (err) {
 					return next(err);
@@ -174,7 +175,16 @@ exports.getInvoice = (req, res, next) => {
 					'inline; filename="' + invoiceName + '"'
 				);
 				res.send(data);
-			});
+			}); */
+
+			const file = fs.createReadStream(invoicePath);
+			res.setHeader("Content-Type", "application/pdf");
+			res.setHeader(
+				"Content-Disposition",
+				'inline; filename="' + invoiceName + '"'
+			);
+			file.pipe(res); //forward the data that read in that stream to response,
+			// response object is writable stream , pipe (read stream ) -> writebalbe stream
 		})
 		.catch(err => next(err));
 };
