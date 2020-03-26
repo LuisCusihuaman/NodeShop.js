@@ -1,5 +1,6 @@
 <%- include('../includes/head.ejs') %>
 <link rel="stylesheet" href="/css/cart.css">
+
 </head>
 
 <body>
@@ -13,8 +14,21 @@
             </li>
             <% }) %>
         </ul>
-        <div>
-            <h2 class="centered">Total: <%= totalSum %></h2>
+        <div class="centered">
+            <h2>Total: <%= totalSum %></h2>
+        </div>
+        <div class="centered">
+            <button id="order-btn" class="btn">ORDER</button>
+            <script src="https://js.stripe.com/v3/"></script>
+            <script>
+                var stripe = Stripe('pk_test_MjfLiobtpczY5j1ATm7fp9NV00Y9nyxAjG');
+                var orderBtn = document.getElementById('order-btn');
+                orderBtn.addEventListener('click', function () {
+                    stripe.redirectToCheckout({
+                        sessionId: '<%= sessionId %>'
+                    });
+                });
+            </script>
         </div>
     </main>
     <%- include('../includes/end.ejs') %>

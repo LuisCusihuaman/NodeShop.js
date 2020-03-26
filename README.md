@@ -35,9 +35,6 @@ Based on the projects of the [NodeJS - The Complete Guide (incl. MVC, REST APIs,
 - Authorization
 - Validation
 - Sending Emails
-
-# *Coming soon in the app* 
-
 - Error Handling
 - File Upload & Download
 - Pagination
