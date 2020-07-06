@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 
 const express = require("express");
@@ -12,13 +13,12 @@ const multer = require("multer");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const MONGODB_URI =
-	"mongodb+srv://Luis:5WAvUJnyunuOLjvZ@cluster0-vmurt.mongodb.net/shop";
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-vmurt.mongodb.net/${process.env.MONGO_PASSWORD}`;
 
 const app = express();
 const store = new MongoDBStore({
 	uri: MONGODB_URI,
-	collection: "sessions"
+	collection: "sessions",
 });
 const csrfProtection = csrf();
 
@@ -28,7 +28,7 @@ const fileStorage = multer.diskStorage({
 	},
 	filename: (req, file, cb) => {
 		cb(null, new Date().toISOString() + "-" + file.originalname);
-	}
+	},
 });
 
 const fileFilter = (req, file, cb) => {
@@ -60,7 +60,7 @@ app.use(
 		secret: "my secret",
 		resave: false,
 		saveUninitialized: false,
-		store: store
+		store: store,
 	})
 );
 app.use(csrfProtection);
@@ -77,14 +77,14 @@ app.use((req, res, next) => {
 		return next();
 	}
 	User.findById(req.session.user._id)
-		.then(user => {
+		.then((user) => {
 			if (!user) {
 				return next();
 			}
 			req.user = user;
 			next();
 		})
-		.catch(err => {
+		.catch((err) => {
 			next(new Error(err));
 		});
 });
@@ -102,17 +102,17 @@ app.use((error, req, res, next) => {
 	res.status(500).render("500", {
 		pageTitle: "Error!",
 		path: "/500",
-		isAuthenticated: req.session.isLoggedIn
+		isAuthenticated: req.session.isLoggedIn,
 	});
 });
 
 mongoose
 	.connect(MONGODB_URI, {
 		useNewUrlParser: true,
-		useUnifiedTopology: true
+		useUnifiedTopology: true,
 	})
 	.then(() => {
-		app.listen(3000);
+		app.listen(process.env.PORT || 3000);
 		console.log("connected");
 	})
-	.catch(err => console.log(err));
+	.catch((err) => console.log(err));
